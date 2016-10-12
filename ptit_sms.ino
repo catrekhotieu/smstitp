@@ -12,7 +12,7 @@ char soupBuffer[1000];
 char smstext[160];// nội dung tin nhắn
 char number[15]; // số điện thoại format theo định dạng quốc tế
 char mrLong[13] = "+84968686717";
-char lastProc[20] = "longxautrai"; //init for first requests
+char lastProc[20] = "longdeptrai"; //init for first requests
 char smsReceiver[20];
 char smsContent[160];
 char soupResult[160];
@@ -28,14 +28,11 @@ void formatNumber(char input[]){
   }
 }
 void inetGet(){
-  if(!forceRun){
-    return;
-  }
     Serial.println(F("\nGPRS status=READY"));
     char inetPath[100] = "/listofnumber.php?mssv=";
     strcat(inetPath, lastProc);
     int nData = inet.httpGET("www.emyeuptit.com", 80, inetPath, soupBuffer, 1000);
-    delay(2711);
+    delay(5422);
     String rResponse = soupBuffer;
     if(nData){
       String soupTmp = soupBuffer;
@@ -65,7 +62,9 @@ void inetGet(){
         delay(5422);
         
       } else {
-        sms.SendSMS(mrLong, "n0thingElse :boss:");
+        if(forceRun){
+          sms.SendSMS(mrLong, "n0thingElse :boss:");
+        {
         delay(2711);
         strcpy(lastProc, "a");
         //delay(5000000);
@@ -85,14 +84,14 @@ void setup() {
     // Inet Get work plans
     if(started){
       if(inet.attachGPRS("v-internet", "", "")){
-       delay(2711);
+       delay(5412);
       } else {
        Serial.println(F("\nGPRS status=IDLE"));
        sms.SendSMS(mrLong, "gsm1-gprs0");
        inet.dettachGPRS();
        delay(2711);
        if(inet.attachGPRS("v-internet", "", "")){
-       delay(2711);
+       delay(5412);
        } else {
           return;
        }
