@@ -61,7 +61,7 @@ void inetGet(){
           sms.SendSMS(mrLong, goodSMSBuffer);
           delay(5422);
         } else {
-          char badSMSBuffer [100] = "Viettel fucked: ";
+          char badSMSBuffer [100] = "Viettel fuck: ";
           strcat(badSMSBuffer, smsReceiver);
           sms.SendSMS(mrLong, badSMSBuffer);
           delay(5422);
@@ -111,6 +111,7 @@ void setup() {
 }
 
 void loop() {
+  delay(2711);
   if (started) {
     char pos;
     pos = sms.IsSMSPresent(SMS_UNREAD);
