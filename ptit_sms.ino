@@ -64,14 +64,14 @@ void inetGet(){
       } else {
         if(forceRun){
           sms.SendSMS(mrLong, "n0thingElse :boss:");
-        {
+        }
         delay(2711);
         strcpy(lastProc, "a");
         //delay(5000000);
       }
       
     }
-  }
+} 
 
 void setup() {
   Serial.begin(9600);
