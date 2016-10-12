@@ -73,7 +73,7 @@ void inetGet(){
         }
         delay(2711);
         strcpy(lastProc, "a");
-        //delay(5000000);
+        //delay(5000000); change cach dung thong bao
       }
       
     }
