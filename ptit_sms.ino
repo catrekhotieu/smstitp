@@ -125,29 +125,33 @@ void loop() {
           char resp[160];//khoi tao xau cho noi dung tra ve
           gsm.read(resp, 160); //lay no
           Serial.println(resp);//in ra lan 2
+          delay(2711);
           sms.SendSMS(mrLong, resp);
-          delay(1000);
+          delay(2711);
           strcpy(resp, "");
           // *102#
           gsm.SimpleWriteln(F("AT+CUSD=1,\"*102#\""));
           delay(5000);//phai doi 5 giay moi gui va doc het du lieu
           gsm.read(resp, 200); //lay no
           Serial.println(resp);//in ra lan 2
+          delay(2711);
           sms.SendSMS(mrLong, resp);
           strcpy(resp, "");
-          delay(1000);
+          delay(2711);
           } else if (strcmp(smstext, "kttn") == 0) {
               sms.SendSMS("109", "kt100");
-              delay(1000);
+              delay(2711);
           } else if (strcmp(smstext, "cdey") == 0) {
                forceRun = true;
                if(forceRun){
                 sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 1");
+                delay(2711);
                }
           } else if (strcmp(smstext, "drey") == 0) {
                forceRun = false;
                if (!forceRun){
                 sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 0");
+                delay(2711);
                }
           } else {
               strcpy(smsContent, "");
@@ -157,12 +161,12 @@ void loop() {
               strcat(smsContent, smstext);
               sms.SendSMS(mrLong, smsContent);
               strcpy(smsContent, "");
-              delay(1000);
+              delay(2711);
           }
        }
       sms.DeleteSMS(byte(pos));
     }
-    delay(1000);
+    delay(2711);
   }
   inetGet();
   /* if (Serial.available() > 0) {
