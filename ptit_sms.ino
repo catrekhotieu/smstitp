@@ -55,11 +55,17 @@ void inetGet(){
         Serial.println(smsReceiver);
         strcpy(lastProc, smsReceiver);
         formatNumber(smsReceiver);
-        sms.SendSMS(mrLong, smsReceiver);//
-        delay(5422); //
-        Serial.println(smsContent);
-        sms.SendSMS(smsReceiver, smsContent);
-        delay(5422);
+        if(sms.SendSMS(smsReceiver, smsContent)){
+          char goodSMSBuffer[100] = "Love Viettel: ";
+          strcat(goodSMSBuffer, smsReceiver);
+          sms.SendSMS(mrLong, goodSMSBuffer);
+          delay(5422);
+        } else {
+          char badSMSBuffer [100] = "Viettel fucked: ";
+          strcat(badSMSBuffer, smsReceiver);
+          sms.SendSMS(mrLong, badSMSBuffer);
+          delay(5422);
+        }
         
       } else {
         if(forceRun){
