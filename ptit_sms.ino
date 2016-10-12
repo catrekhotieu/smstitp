@@ -12,7 +12,7 @@ char soupBuffer[1000];
 char smstext[160];// nội dung tin nhắn
 char number[15]; // số điện thoại format theo định dạng quốc tế
 char mrLong[13] = "+84968686717";
-char lastProc[20] = "longdeptrai"; //init for first requests
+char lastProc[20] = "longxautrai"; //init for first requests
 char smsReceiver[20];
 char smsContent[160];
 char soupResult[160];
