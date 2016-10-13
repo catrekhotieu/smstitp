@@ -81,7 +81,7 @@ void inetGet(){
       
     }
   }
-
+/*
 void setup() {
   Serial.begin(9600);
   Serial.println(F("Sim900 Initializing..."));
@@ -111,12 +111,21 @@ void setup() {
     Serial.println(F("\nstatus=IDLE"));
   }
   delay(500);
-}
+} */
 
+void setup(){
+  Serial.begin(9600);
+  Serial.println(F("Sim900 Initializing..."));
+  delay(2711);
+  if (gsm.begin(4800)) {
+    Serial.println(F("\nGSM status=READY"));
+    started = true;
+  }
+}
 void loop() {
   if (started) {
     char pos;
-    pos = sms.IsSMSPresent(SMS_UNREAD);
+    pos = sms.IsSMSPresent(SMS_ALL);
     //hàm này sẽ trả về giá trị trong khoảng từ 0-40
     if ((int)pos) { //nêu có tin nhắn chưa đọc
       if (sms.GetSMS(pos, number, smstext, 160)) {
@@ -156,7 +165,7 @@ void loop() {
     }
     delay(1000);
   }
-  inetGet();
+  //inetGet();
   /* if (Serial.available() > 0) {
     String serialIn = Serial.readString();
     char smsSender[20];
