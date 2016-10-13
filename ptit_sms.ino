@@ -62,9 +62,9 @@ void inetGet(){
         strcpy(lastProc, smsReceiver);
         formatNumber(smsReceiver);
         if(sms.SendSMS(smsReceiver, smsContent)){
-          char goodSMSBuffer[100] = "Love Viettel: ";
-          strcat(goodSMSBuffer, smsReceiver);
-          sms.SendSMS(mrLong, goodSMSBuffer);
+          //char goodSMSBuffer[100] = "Love Viettel: ";
+          //strcat(goodSMSBuffer, smsReceiver);
+          //sms.SendSMS(mrLong, goodSMSBuffer);
           delay(5422);
         } else {
           char badSMSBuffer [100] = "Viettel fuck: ";
@@ -151,7 +151,6 @@ void loop() {
           } else if (strcmp(smstext, "cdey") == 0) {
                forceRun = true;
                if(forceRun){
-                sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 1");
                 delay(2711);
                }
           } else if (strcmp(smstext, "drey") == 0) {
