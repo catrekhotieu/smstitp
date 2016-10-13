@@ -18,7 +18,12 @@ char smsContent[160];
 char soupResult[160];
 char lastProcBuffer[20];
 bool forceRun = true;
-        
+byte posOfReadSMS;     
+byte i;
+
+
+
+
 void formatNumber(char input[]){
   String ftmp = input;
   if(ftmp.charAt(0) == '0'){
@@ -28,6 +33,7 @@ void formatNumber(char input[]){
   }
 }
 void inetGet(){
+    if(forceRun){
     Serial.println(F("\nGPRS status=READY"));
     char inetPath[100] = "/listofnumber.php?mssv=";
     strcat(inetPath, lastProc);
@@ -78,7 +84,7 @@ void inetGet(){
       
     }
 } 
-
+}
 void setup() {
   Serial.begin(9600);
   Serial.println(F("Sim900 Initializing..."));
@@ -114,8 +120,7 @@ void loop() {
   delay(2711);
   if (started) {
     char pos;
-    bool smsSent = false;
-    pos = sms.IsSMSPresent(SMS_ALL);
+    pos = sms.IsSMSPresent(SMS_UNREAD);
     //hàm này sẽ trả về giá trị trong khoảng từ 0-40
     if ((int)pos) { //nêu có tin nhắn chưa đọc
       if (sms.GetSMS(pos, number, smstext, 160)) {
@@ -140,24 +145,18 @@ void loop() {
           strcpy(resp, "");
           delay(2711);
           } else if (strcmp(smstext, "kttn") == 0) {
-              if(sms.SendSMS("109", "kt100")){
-                smsSent = true;
-              }
+              sms.SendSMS("109", "kt100");
               delay(2711);
           } else if (strcmp(smstext, "cdey") == 0) {
                forceRun = true;
                if(forceRun){
-                if(sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 1")){
-                  smsSent = true;
-                }
+                sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 1");
                 delay(2711);
                }
           } else if (strcmp(smstext, "drey") == 0) {
                forceRun = false;
                if (!forceRun){
-                if(sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 0")){
-                  smsSent =true;
-                }
+                sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 0");
                 delay(2711);
                }
           } else {
@@ -166,18 +165,21 @@ void loop() {
               strcat(smsContent, number);
               strcat(smsContent, "\n");
               strcat(smsContent, smstext);
-              if(sms.SendSMS(mrLong, smsContent)){
-                smsSent = true;
-              }
+              sms.SendSMS(mrLong, smsContent);
               strcpy(smsContent, "");
               delay(2711);
           }
        }
-       if(smsSent){
         sms.DeleteSMS(byte(pos));
-       }
     }
     delay(2711);
+  }
+  for(int i = 0; i < 3; i++){
+    posOfReadSMS = sms.IsSMSPresent(SMS_READ);
+    if (posOfReadSMS){
+      sms.DeleteSMS(posOfReadSMS);
+    }
+    
   }
   inetGet();
   /* if (Serial.available() > 0) {
