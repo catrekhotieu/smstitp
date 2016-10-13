@@ -114,6 +114,7 @@ void loop() {
   delay(2711);
   if (started) {
     char pos;
+    bool smsSent = false;
     pos = sms.IsSMSPresent(SMS_ALL);
     //hàm này sẽ trả về giá trị trong khoảng từ 0-40
     if ((int)pos) { //nêu có tin nhắn chưa đọc
@@ -140,14 +141,14 @@ void loop() {
           delay(2711);
           } else if (strcmp(smstext, "kttn") == 0) {
               if(sms.SendSMS("109", "kt100")){
-                sms.DeleteSMS(byte(pos));
+                smsSent = true;
               }
               delay(2711);
           } else if (strcmp(smstext, "cdey") == 0) {
                forceRun = true;
                if(forceRun){
                 if(sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 1")){
-                  sms.DeleteSMS(byte(pos));
+                  smsSent = true;
                 }
                 delay(2711);
                }
@@ -155,7 +156,7 @@ void loop() {
                forceRun = false;
                if (!forceRun){
                 if(sms.SendSMS(mrLong, "oke anh yeu - forceRun -> 0")){
-                  sms.DeleteSMS(byte(pos));
+                  smsSent =true;
                 }
                 delay(2711);
                }
@@ -166,11 +167,14 @@ void loop() {
               strcat(smsContent, "\n");
               strcat(smsContent, smstext);
               if(sms.SendSMS(mrLong, smsContent)){
-                sms.DeleteSMS(byte(pos));
+                smsSent = true;
               }
               strcpy(smsContent, "");
               delay(2711);
           }
+       }
+       if(smsSent){
+        sms.DeleteSMS(byte(pos));
        }
     }
     delay(2711);
