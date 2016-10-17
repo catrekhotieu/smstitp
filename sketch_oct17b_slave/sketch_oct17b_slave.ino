@@ -27,6 +27,7 @@ void setup() {
   Serial.begin(9600);
   Wire.begin(27);
   Wire.onReceive(receiveEvent);
+  Wire.onRequest(requestEvent);
   Serial.println("initializing...");
   if (gsm.begin(4800)) {
     started = true;
@@ -92,8 +93,9 @@ void loop() {
     if (posOfReadSMS){
       sms.DeleteSMS(posOfReadSMS);
     }
-    
-  }
+   }
+  // i2c
+  
 }
 
 
@@ -129,6 +131,13 @@ void formatNumber(char input[]){
     ftmp.remove(0, 1);
     ftmp = "+84" + ftmp;
     ftmp.toCharArray(input, ftmp.length() + 1);
+  }
+}
+void requestEvent(){
+  if(forceRun == true){
+    Wire.write("1");
+  } else {
+    Wire.write("0");
   }
 }
 

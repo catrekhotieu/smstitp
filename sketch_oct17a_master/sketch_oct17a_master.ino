@@ -70,7 +70,7 @@ void inetGet(){
     int posOfEnd = soupTmp.indexOf("</body>") - 1;
     soupTmp.remove(posOfEnd); // raw remaining
     soupTmp.toCharArray(soupResult, 160);
-    Wire.requestFrom(27, 100); //  request 100 byte form device #27
+    Wire.requestFrom(27, 1); //  request 100 byte form device #27
     while (Wire.available()){
       char c = Wire.read();
       if (c == '1'){
