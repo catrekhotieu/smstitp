@@ -11,13 +11,13 @@
 
 //-------------------------variable-------------------------//
 boolean started = false; //trạng thái modul sim
-boolean forceRun;
+boolean forceRun = false;
 char smstext[160];// nội dung tin nhắn
 char number[15]; // số điện thoại format theo định dạng quốc tế
 char mrLong[13] = "+84968686717";
 char smsReceiver[20];
 char smsContent[160];
-char *soupBuffer = "";
+char soupBuffer[160];
 char lastProc[20];
 char soupResult[160];
 byte posOfReadSMS;     
@@ -27,7 +27,7 @@ void setup() {
   Serial.begin(9600);
   Wire.begin(27);
   Wire.onReceive(receiveEvent);
-  Wire.onRequest(requestEvent);
+ // Wire.onRequest(requestEvent);
   Serial.println("initializing...");
   if (gsm.begin(4800)) {
     started = true;
@@ -45,6 +45,35 @@ void setup() {
 
 void loop() {
  delay(2711); 
+  smsProcess();
+  /* for(int i = 0; i < 3; i++){
+    posOfReadSMS = sms.IsSMSPresent(SMS_READ);
+    if (posOfReadSMS){
+      sms.DeleteSMS(posOfReadSMS);
+    }
+   } */
+  // i2c
+  if(!strcmp(soupBuffer, "")){
+    
+    Serial.println(soupBuffer);
+    String soupTmp = soupBuffer;
+    
+  }
+}
+
+
+void receiveEvent(int msgLen){
+  Serial.print("nhan duoc lenh tu master: ");
+  Serial.println(msgLen);
+  strcpy(soupBuffer, "");
+  while(Wire.available() > 0){
+    char c = Wire.read();
+    Serial.print(c);
+  }
+}
+
+
+void smsProcess(){
   if (started) {
     char pos;
     pos = sms.IsSMSPresent(SMS_UNREAD);
@@ -87,57 +116,6 @@ void loop() {
         sms.DeleteSMS(byte(pos));
     }
     delay(2711);
-  }
-  for(int i = 0; i < 3; i++){
-    posOfReadSMS = sms.IsSMSPresent(SMS_READ);
-    if (posOfReadSMS){
-      sms.DeleteSMS(posOfReadSMS);
-    }
-   }
-  // i2c
-  
-}
-
-
-void receiveEvent(int msgLen){
-  Serial.println("nhan duoc lenh tu master");
-  int i = 0;
-  soupBuffer = "";
-  while(Wire.available() > 1){
-    soupBuffer[i] = Wire.read();
-    i++;
-  }
-  String soupTmp = soupBuffer;
-  int posOfDeli = soupTmp.indexOf('|');
-  if(posOfDeli != -1){
-    String rcvTmp = soupTmp.substring(0, posOfDeli);
-    rcvTmp.toCharArray(smsReceiver, 20);
-    String cntTmp = soupTmp.substring(posOfDeli + 1);
-    cntTmp.toCharArray(smsContent, 160);
-    Serial.println(F("--------------posOfDeli--------------"));
-    Serial.println(smsReceiver);
-    Serial.println(smsContent);
-    strcpy(lastProc, smsReceiver);
-    formatNumber(smsReceiver);
-    Serial.println("sending sms...");
-    sms.SendSMS("+84968686717", smsContent);
-  }
-  return;
-}
-
-void formatNumber(char input[]){
-  String ftmp = input;
-  if(ftmp.charAt(0) == '0'){
-    ftmp.remove(0, 1);
-    ftmp = "+84" + ftmp;
-    ftmp.toCharArray(input, ftmp.length() + 1);
-  }
-}
-void requestEvent(){
-  if(forceRun == true){
-    Wire.write("1");
-  } else {
-    Wire.write("0");
   }
 }
 

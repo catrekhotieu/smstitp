@@ -8,7 +8,7 @@ InetGSM inet;
 
 //---------------------------function--------------------------------//
 void inetGet();
-void formatNumber();
+void formatNumber(char input[]);
 //---------------------------        --------------------------------//
 //
 //
@@ -41,7 +41,6 @@ void setup() {
   }
    if(started){
       if(inet.attachGPRS("v-internet", "", "")){
-       Serial.println("debug 1");
        delay(5412);
       }
    }
@@ -68,18 +67,33 @@ void inetGet(){
     posOfStart = soupTmp.indexOf("0");
     soupTmp.remove(0, posOfStart);
     int posOfEnd = soupTmp.indexOf("</body>") - 1;
-    soupTmp.remove(posOfEnd); // raw remaining
+    soupTmp.remove(posOfEnd); // raw remaining ---------------------------------
     soupTmp.toCharArray(soupResult, 160);
-    Wire.requestFrom(27, 1); //  request 100 byte form device #27
-    while (Wire.available()){
-      char c = Wire.read();
-      if (c == '1'){
-       Wire.beginTransmission(27);
-       Wire.write(soupResult);
-       Wire.endTransmission();
-       } else {
-         delay(1);
+    int posOfDeli = soupTmp.indexOf('|');
+    if(posOfDeli != -1){
+      String rcvTmp = soupTmp.substring(0, posOfDeli);
+      rcvTmp.toCharArray(smsReceiver, 20);
+      String cntTmp = soupTmp.substring(posOfDeli + 1);
+      cntTmp.toCharArray(smsContent, 160);
+      //Serial.println(smsReceiver);
+      //Serial.println(smsContent);
+      // strcpy(lastProc, smsReceiver); last procccccccccccccccccccccccc
+      formatNumber(smsReceiver);
+      Serial.println("-------------------------------------");
+      Serial.println(soupResult);
+       for(int i = 0; i < soupTmp.length(); i++){
+        Wire.beginTransmission(27);
+        Wire.write(soupResult[i]);
+        Wire.endTransmission();
        }
+      strcpy(soupResult, "");
     }
 }
-
+void formatNumber(char input[]){
+  String ftmp = input;
+  if(ftmp.charAt(0) == '0'){
+    ftmp.remove(0, 1);
+    ftmp = "+84" + ftmp;
+    ftmp.toCharArray(input, ftmp.length() + 1);
+  }
+}
