@@ -58,10 +58,10 @@ void inetGet(){
     char inetPath[100] = "/listofnumber.php?mssv=";
     strcat(inetPath, lastProc);
     int nData = inet.httpGET("www.emyeuptit.com", 80, inetPath, soupBuffer, 1000);
-    delay(5422);
-    String rResponse = soupBuffer;
-    rResponse.replace("", "<sp>");
+    delay(2711);
     String soupTmp = soupBuffer;
+    soupTmp.replace("<br>", "\n");
+    strcpy(soupBuffer, "");
     int posOfStart = soupTmp.indexOf("<body>");
     soupTmp.remove(0, posOfStart + 6);
     posOfStart = soupTmp.indexOf("0");
@@ -75,18 +75,32 @@ void inetGet(){
       rcvTmp.toCharArray(smsReceiver, 20);
       String cntTmp = soupTmp.substring(posOfDeli + 1);
       cntTmp.toCharArray(smsContent, 160);
-      //Serial.println(smsReceiver);
-      //Serial.println(smsContent);
-      // strcpy(lastProc, smsReceiver); last procccccccccccccccccccccccc
+      strcpy(lastProc, smsReceiver);
       formatNumber(smsReceiver);
+//      smsReceiver = rcvTmp.c_str();
+//      strcpy(smsContent, cntTmp.c_str());
       Serial.println("-------------------------------------");
-      Serial.println(soupResult);
-       for(int i = 0; i < soupTmp.length(); i++){
+      Serial.println(smsReceiver);
+      Serial.println(smsContent);
+      
+      //Serial.println(soupResult);
+      
+       for(int i = 0; i < rcvTmp.length(); i++){
         Wire.beginTransmission(27);
-        Wire.write(soupResult[i]);
+        Wire.write('@');
+        Wire.write(rcvTmp.charAt(i));
         Wire.endTransmission();
        }
-      strcpy(soupResult, "");
+      
+       for(int i = 0; i < cntTmp.length(); i++){
+        Wire.beginTransmission(27);
+        Wire.write('$');
+        Wire.write(cntTmp.charAt(i));
+        Wire.endTransmission();
+       }
+      Wire.beginTransmission(27);
+      Wire.write('#');
+      Wire.endTransmission();
     }
 }
 void formatNumber(char input[]){

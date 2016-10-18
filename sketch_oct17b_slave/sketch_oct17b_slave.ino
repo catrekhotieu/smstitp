@@ -11,16 +11,18 @@
 
 //-------------------------variable-------------------------//
 boolean started = false; //trạng thái modul sim
-boolean forceRun = false;
+volatile boolean forceRun = false;
 char smstext[160];// nội dung tin nhắn
 char number[15]; // số điện thoại format theo định dạng quốc tế
 char mrLong[13] = "+84968686717";
 char smsReceiver[20];
 char smsContent[160];
-char soupBuffer[160];
+char smsMessage[160];
+volatile char soupBuffer[160];
 char lastProc[20];
 char soupResult[160];
-byte posOfReadSMS;     
+byte posOfReadSMS;    
+volatile byte x, y; 
 //----------------------------------------------------------//
 SMSGSM sms;
 void setup() {
@@ -53,11 +55,15 @@ void loop() {
     }
    } */
   // i2c
-  if(!strcmp(soupBuffer, "")){
-    
-    Serial.println(soupBuffer);
-    String soupTmp = soupBuffer;
-    
+  if(forceRun){
+    sms.SendSMS(smsReceiver, smsMessage);
+    delay(500);
+    x = 0;
+    y = 0;
+    strcpy(smsReceiver, "");
+    strcpy(smsMessage, "");
+    delay(2711);
+    forceRun = false;
   }
 }
 
@@ -65,10 +71,26 @@ void loop() {
 void receiveEvent(int msgLen){
   Serial.print("nhan duoc lenh tu master: ");
   Serial.println(msgLen);
-  strcpy(soupBuffer, "");
+  char c[1];
   while(Wire.available() > 0){
     char c = Wire.read();
-    Serial.print(c);
+    if(c == '@'){
+      c = Wire.read();
+      Serial.println(c);
+      smsReceiver[x] = c;
+      x++;
+    } else if(c == '$'){
+      c = Wire.read();
+      Serial.println(c);
+      smsMessage[y] = c;
+      y++;
+    } else if(c == '#'){
+      Serial.println(c);
+      forceRun = true;
+    } else {
+      Serial.println("unknow error @ # $");
+    }
+    
   }
 }
 
