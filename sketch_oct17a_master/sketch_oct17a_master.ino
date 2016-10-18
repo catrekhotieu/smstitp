@@ -75,7 +75,7 @@ void inetGet(){
       rcvTmp.toCharArray(smsReceiver, 20);
       String cntTmp = soupTmp.substring(posOfDeli + 1);
       cntTmp.toCharArray(smsContent, 160);
-      strcpy(lastProc, smsReceiver);
+      strcpy(lastProc, rcvTmp.c_str());
       formatNumber(smsReceiver);
 //      smsReceiver = rcvTmp.c_str();
 //      strcpy(smsContent, cntTmp.c_str());
